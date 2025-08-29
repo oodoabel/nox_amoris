@@ -4,10 +4,9 @@ import React from "react";
 interface componentProps {
   name: string;
   imageUrl: string;
-  selected: number;
 }
 
-const CandidateCard = ({ name, imageUrl, selected }: componentProps) => {
+const CandidateCard = ({ name, imageUrl }: componentProps) => {
   return (
     <div>
       <div className="flex justify-center flex-col m-3 bg-gradient-to-b from-(--primary)/50 to-(--secondary) items-center p-1 h-[10rem] lg:h-[20rem] w-[8rem] lg:w-[18rem] rounded-2xl shadow-md ">
