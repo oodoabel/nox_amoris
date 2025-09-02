@@ -1,675 +1,759 @@
 "use client";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import CandidateCard from "./components/CandidateCard";
 
-export const categories = [
-  {
-    id: 1,
-    name: "Most Handsome (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Nwakuche Emmanuel",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1V4SCrcdBEhyk2swWSOZTBPt1XiVdMprN",
-      },
-      2: {
-        id: 2,
-        name: "Victor Oluwatimileyin Adeboye",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=19bGiwjHl7j0qEMvIWxUw4q0tkgDYX5hJ",
-      },
-    },
-  },
-  {
-    id: 2,
-    name: "Most Handsome (Bosso)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Abutu Emmanuel Agaba",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1jW0ERzeXWP740nqge3WQuz_yZcAPuqAW",
-      },
-    },
-  },
-  {
-    id: 3,
-    name: "Most Beautiful (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "GODWIN JOVITA CHIAMAKA",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1p2jylo3HSpM5ebJKfYk57yISUeHNzWCt",
-      },
-      2: {
-        id: 2,
-        name: "Francis Doris Ojone",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1yUoToTgQlF4-j0oSN5qQmXHcXmNXOKnU",
-      },
-      3: {
-        id: 3,
-        name: "Naze Seember Cecilia",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=117ziims0BFnKXtnBR3YaV44s9KILve4T",
-      },
-      4: {
-        id: 4,
-        name: "Uwakwe Joy Chisom",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1FQ-AVZRVWH57xDBFdtXAjViBVQK2aGYa",
-      },
-      5: {
-        id: 5,
-        name: "Happiness Simon",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1zi0N58JoKCbF3j0r689sVsZYSzlyg7bX",
-      },
-    },
-  },
-  {
-    id: 4,
-    name: "Most Beautiful (Bosso)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Esther Benjamin",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1ggV5X0DZnBCBs-X6gwkdtjBqkwUxuCu5",
-      },
-    },
-  },
-  {
-    id: 5,
-    name: "Most Intellectual (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Obute ladi",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1H6UH2RquUqiuhpGgIhN9HLrIPaINgyHJ",
-      },
-      2: {
-        id: 2,
-        name: "Uchebueze Ebuka",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1XnsNBcCT6xHiFyfjRHpfKKtuh_8z5D4g",
-      },
-    },
-  },
-  {
-    id: 6,
-    name: "Most Intellectual (Bosso)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Okeh Francis Chimaroke",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1d_2YiVNRSUp3RpuOWn-fgwOnbL4MCd3N",
-      },
-    },
-  },
-  {
-    id: 7,
-    name: "Most Social",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Ameh Regina Gracious",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1lBHkwz6PN2Bt5wqkvnXneSK7EeDWe3VR",
-      },
-      2: {
-        id: 2,
-        name: "Francis Esther Ugbedeojo",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1E76LQgguEHav29V2mwAenAmRegrbC_ry",
-      },
-      3: {
-        id: 3,
-        name: "Abakpa Emmanuel Emzzil",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1Y3bXzWkbIfzqdx2SFSqNJPA6zL4WELRp",
-      },
-      4: {
-        id: 4,
-        name: "Onipe John Adeiza Martin",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1wPJz4IWA24mIE-Vje5_rvo04r-n1FX3S",
-      },
-    },
-  },
-  {
-    id: 8,
-    name: "Entrepreneur of the Year (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Uwakwe Joy Chisom",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1FQ-AVZRVWH57xDBFdtXAjViBVQK2aGYa",
-      },
-      2: {
-        id: 2,
-        name: "Sabastine Ngohile Felicia",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1WVh6cQZ8VbDpbamaC1K2EESqowzfs-0Q",
-      },
-      3: {
-        id: 3,
-        name: "Ezennabuife Eric Chimezie",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1n8kl-XEQTwXXSWG89_7ziB0RmObLhhhp",
-      },
-    },
-  },
-  {
-    id: 9,
-    name: "Entrepreneur of the Year (Bosso)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Sabastine Ngohile Felicia",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1WVh6cQZ8VbDpbamaC1K2EESqowzfs-0Q",
-      },
-      2: {
-        id: 2,
-        name: "Adekemi Faustina Ajibade",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=18ZZtmmDnuAlr_MC_IdnkLAaBCrT1mZnc",
-      },
-    },
-  },
-  {
-    id: 10,
-    name: "Best Dressed Male (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "John oche samuel",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=11PbHlM7by0_rj9nQxRAqgrCUItF1mAKf",
-      },
-    },
-  },
-  {
-    id: 12,
-    name: "Best Dressed Female (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "GODWIN JOVITA CHIAMAKA",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1p2jylo3HSpM5ebJKfYk57yISUeHNzWCt",
-      },
-      2: {
-        id: 2,
-        name: "Naze Seember Cecilia",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=117ziims0BFnKXtnBR3YaV44s9KILve4T",
-      },
-      3: {
-        id: 3,
-        name: "Uwakwe Joy Chisom",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1FQ-AVZRVWH57xDBFdtXAjViBVQK2aGYa",
-      },
-    },
-  },
-  {
-    id: 14,
-    name: "Most Dedicated (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Victor Oluwatimileyin Adeboye",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=19bGiwjHl7j0qEMvIWxUw4q0tkgDYX5hJ",
-      },
-      2: {
-        id: 2,
-        name: "Awolowo Mary Abidemi",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1J9a9wuoN2hTjQmYA_2vgsoW672CAk1uY",
-      },
-      3: {
-        id: 3,
-        name: "Sani Nehemiah",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1K17EDuXXa5BiNuC1vwCscMwgQm0lagEr",
-      },
-      4: {
-        id: 4,
-        name: "Adewale Esther",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1Vm5-U7EI5TMIt1_FVLZKKImfArkTHPKb",
-      },
-      5: {
-        id: 5,
-        name: "Atsewe Joshua",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1F8hPnT-adJjseCSmvetiwXgJRiB0lT6x",
-      },
-      6: {
-        id: 6,
-        name: "Anyaegbu, Chizoba Assumpta",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1Et3qD2RYChdG5sahqltlhJn7pNJ42NyL",
-      },
-    },
-  },
-  {
-    id: 15,
-    name: "Most Dedicated (Bosso)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Ufomadu Stephen",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1sxXck-l4hSaBiHXh57YaPxRfHyz-SVkG",
-      },
-      2: {
-        id: 2,
-        name: "Osas-Evbuomwan Isaac Osasenaga",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1o_H5mSnsZbuTS3eb9WlrbZ1OPhjK_U0c",
-      },
-    },
-  },
-  {
-    id: 16,
-    name: "Outstanding Personality (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Iweobi Joyce chidalu",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1R-75dBd0SfkVlCrsMCyhx25JOhyKnhH4",
-      },
-      2: {
-        id: 2,
-        name: "Anyaegbu, Chizoba Assumpta",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1Et3qD2RYChdG5sahqltlhJn7pNJ42NyL",
-      },
-      3: {
-        id: 3,
-        name: "PaulLuis Joseph Bazekore",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1mrPFqyQ8NFygwsKkyqYpokyXFfW5gfkh",
-      },
-      4: {
-        id: 4,
-        name: "Victor Oluwatimileyin Adeboye",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=19bGiwjHl7j0qEMvIWxUw4q0tkgDYX5hJ",
-      },
-      5: {
-        id: 5,
-        name: "Sani Nehemiah",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1K17EDuXXa5BiNuC1vwCscMwgQm0lagEr",
-      },
-    },
-  },
-  {
-    id: 17,
-    name: "Outstanding Personality (Bosso)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Ufomadu Stephen",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1sxXck-l4hSaBiHXh57YaPxRfHyz-SVkG",
-      },
-    },
-  },
-  {
-    id: 18,
-    name: "Cool, Calm & Collected (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Emmanuel Wilfred Ochai",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1XHWCGk76OHbHmn5UcWluugGhvrgLKupj",
-      },
-      2: {
-        id: 2,
-        name: "MANI UMAR",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=19ZiiLjcPEFLw7COJZTU6kta74x2ZRU7e",
-      },
-      3: {
-        id: 3,
-        name: "Anyaegbu, Chizoba Assumpta",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1Et3qD2RYChdG5sahqltlhJn7pNJ42NyL",
-      },
-      4: {
-        id: 4,
-        name: "Adewale Esther",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1Vm5-U7EI5TMIt1_FVLZKKImfArkTHPKb",
-      },
-      5: {
-        id: 5,
-        name: "Sani Nehemiah",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1K17EDuXXa5BiNuC1vwCscMwgQm0lagEr",
-      },
-      6: {
-        id: 6,
-        name: "Osigbemhe imhonikhe John",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1y-Toh9G9iq0YCJzG32Sl2itYopV5T7Kl",
-      },
-    },
-  },
-  {
-    id: 21,
-    name: "Best Clique (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Anyaegbu, Chizoba Assumpta",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1Et3qD2RYChdG5sahqltlhJn7pNJ42NyL",
-      },
-      2: {
-        id: 2,
-        name: "Awolowo Mary Abidemi",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1J9a9wuoN2hTjQmYA_2vgsoW672CAk1uY",
-      },
-      3: {
-        id: 3,
-        name: "Chizzy & Mary",
-        imageurl: "/candidates/chizzy_mary.jpg",
-      },
-    },
-  },
-  {
-    id: 22,
-    name: "Best Clique (Bosso)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Linus Justina",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1sUb3rRUoIS0B6J1IpWA7WpkfAjGvd_03",
-      },
-    },
-  },
-  {
-    id: 23,
-    name: "Mr. Culture (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Izekwe Ndubuisi Joshua",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=11aRE-VRVK_J0KNVLX8D1W7gDvZvpNQrV",
-      },
-      2: {
-        id: 2,
-        name: "John oche samuel",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=11PbHlM7by0_rj9nQxRAqgrCUItF1mAKf",
-      },
-    },
-  },
-  {
-    id: 25,
-    name: "Miss Culture (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Araga Peace Ahuoyiza",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=11im1aaXEe9m0URJX6pBnGt6832Fjdhq5",
-      },
-      2: {
-        id: 2,
-        name: "Awolowo Mary Abidemi",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1J9a9wuoN2hTjQmYA_2vgsoW672CAk1uY",
-      },
-    },
-  },
-  {
-    id: 27,
-    name: "Most Political",
-    candidates: {
-      1: {
-        id: 1,
-        name: "TIMBIR DAVID",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1gtRo3yRddFdz0ArUVgsTugRT3CY-5Z4h",
-      },
-    },
-  },
-  {
-    id: 28,
-    name: "Sports Personality of the Year (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Abraham Labu Ibrahim",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1lAmUgMriDKtBeJfQ71xpN_b4PJRDVCr7",
-      },
-      2: {
-        id: 2,
-        name: "Ayaka Stephen abene",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1vKx-ALPoualkaF40VdtZsRRU9KH2b4-5",
-      },
-      3: {
-        id: 3,
-        name: "Ikyobo kashimana Sandra",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=16RYcPqVXB6XUgAqk-UyKn0uu7oSH2zZG",
-      },
-    },
-  },
-  {
-    id: 30,
-    name: "Mr. Ebony (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Olajide Olivia",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1ovBgrMi22Qo2DzZdPTvGF_GiGOT1ZOLh",
-      },
-    },
-  },
-  {
-    id: 31,
-    name: "Mr. Ebony (Bosso)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Osas-Evbuomwan Isaac Osasenaga",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1o_H5mSnsZbuTS3eb9WlrbZ1OPhjK_U0c",
-      },
-      2: {
-        id: 2,
-        name: "Happiness Simon",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1zi0N58JoKCbF3j0r689sVsZYSzlyg7bX",
-      },
-    },
-  },
-  {
-    id: 32,
-    name: "Miss Ebony (GK)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Olajide Olivia",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1ovBgrMi22Qo2DzZdPTvGF_GiGOT1ZOLh",
-      },
-      2: {
-        id: 2,
-        name: "Happiness Simon",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1zi0N58JoKCbF3j0r689sVsZYSzlyg7bX",
-      },
-    },
-  },
-  {
-    id: 33,
-    name: "Miss Ebony (Bosso)",
-    candidates: {
-      1: {
-        id: 1,
-        name: "Happiness Simon",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1zi0N58JoKCbF3j0r689sVsZYSzlyg7bX",
-      },
-    },
-  },
-  {
-    id: 34,
-    name: "Music Personality of the Year",
-    candidates: {
-      1: {
-        id: 1,
-        name: "PaulLuis Joseph Bazekore",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1mrPFqyQ8NFygwsKkyqYpokyXFfW5gfkh",
-      },
-      2: {
-        id: 2,
-        name: "Ayaka Stephen abene",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1vKx-ALPoualkaF40VdtZsRRU9KH2b4-5",
-      },
-      3: {
-        id: 3,
-        name: "Iwuamadi Joy",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1qXiPLyJJHkE7shm7FGjVnnyLT_Q_1KnD",
-      },
-      4: {
-        id: 4,
-        name: "Adewale Esther",
-        imageurl:
-          "https://drive.google.com/thumbnail?id=1Vm5-U7EI5TMIt1_FVLZKKImfArkTHPKb",
-      },
-    },
-  },
-  // Categories with no candidates in the nominations file
-  {
-    id: 11,
-    name: "Best Dressed Male (Bosso)",
-    candidates: {},
-  },
-  {
-    id: 13,
-    name: "Best Dressed Female (Bosso)",
-    candidates: {},
-  },
-  {
-    id: 19,
-    name: "Cool, Calm & Collected (Bosso)",
-    candidates: {},
-  },
-  {
-    id: 20,
-    name: "Most Influential",
-    candidates: {},
-  },
-  {
-    id: 24,
-    name: "Mr. Culture (Bosso)",
-    candidates: {},
-  },
-  {
-    id: 26,
-    name: "Miss Culture (Bosso)",
-    candidates: {},
-  },
-  {
-    id: 29,
-    name: "Sports Personality of the Year (Bosso)",
-    candidates: {},
-  },
-  {
-    id: 35,
-    name: "Couple of the Year",
-    candidates: {},
-  },
-];
+export const useVerification = () => {
+  const [verified, setVerified] = useState<boolean | null>(null);
+  return { verified, setVerified };
+};
 
-interface SelectedCandidates {
-  [categoryId: number]: string;
-}
-const page = () => {
-  const [selectedCandidates, setSelectedCandidates] =
-    useState<SelectedCandidates>({});
+const LoginPage = () => {
+  const router = useRouter();
 
-  const handleCandidateSelect = (categoryId: number, candidateName: string) => {
-    setSelectedCandidates((prev) => ({
-      ...prev,
-      [categoryId]: candidateName,
-    }));
+  const [email, setEmail] = useState("");
+  const [isVerified, setIsVerified] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const emails: string[] = [
+    "jerryadejo02@gmail.com",
+    "johnuchechukwu363@gmail.com",
+    "mercymbapinen@gmail.com",
+    "avertsemurphy@gmail.com",
+    "emmanuelochigbo104@gmail.com",
+    "faterigba@gmail.com",
+    "julietperpetualarome@gmail.com",
+    "umehchigozie4@gmail.com",
+    "wilsonmakama99@gmail.com",
+    "anyaegbuchizoba@hotmail.com",
+    "shankyulasimeon2002@gmail.com",
+    "mercyebute22@gmail.com",
+    "gladyskelechi31@gmail.com",
+    "echegipat@gmail.com",
+    "maryawolowo7@gmail.com",
+    "james.m1701934@st.futminna.edu.ng",
+    "ebenedict172@gmail.com",
+    "iwejuogerald@gmail.com",
+    "priscillaukwueze19@gmail.com",
+    "agnesjatau2@gmail.com",
+    "amoduochoyoda17@gmail.com",
+    "shimiberje39@gmail.com",
+    "Paulitodo10@gmail.com",
+    "nicholassamuel0146@gmail.com",
+    "jeremiahdamjuma@gmail.com",
+    "abuhanthony09@gmail.com",
+    "mbonuvivianchiama@gmail.com",
+    "ajinomohemmanuel1@gmail.com",
+    "chidimmaokolo148@gmail.com",
+    "ojochenemimoses02@gmail.com",
+    "nancyakor6@gmail.com",
+    "ikoyiben@gmail.com",
+    "abutumary85@gmail.com",
+    "mikaelsonjohn8140@gmail.com",
+    "gabrielochayi100@gmail.com",
+    "mikaelsonjoe28@gmail.com",
+    "ekumazeph@gmail.com",
+    "ellachukwuma2@gmail.com",
+    "bensone300@gmail.com",
+    "godwinenokelaola@gmail.com",
+    "aemmanuelelvis@gmail.com",
+    "anyanwuwis32@gmail.com",
+    "peterdada448@gmail.com",
+    "uchemickey21@gmail.com",
+    "chidimma.okechi403omebe@gmail.com",
+    "godwinmary2012@gmail.com",
+    "jeremiahyusuf8@gmail.com",
+    "dikechukwuemeka8@gmail.com",
+    "immanuelikojo@gmail.com",
+    "democracy701@gmail.com",
+    "odahbartholomewonyilo123@gmail.com",
+    "fidelisatime33@gmail.com",
+    "dayiljoshuasylvanus@gmail.com",
+    "ruthide84@gmail.com",
+    "ponmile63@gmail.com",
+    "okodededaniel@gmail.com",
+    "ekumagabriella@gmail.com",
+    "fidelisokoye02@gmail.com",
+    "ugwuokedazzle05@gmail.com",
+    "ojomafaith20201762003@gmail.com",
+    "michaelajodo2@gmail.com",
+    "agujames195@gmail.com",
+    "abahemmanueltech@gmail.com",
+    "somtochukwunweke14@gmail.com",
+    "plusper25@gmail.com",
+    "sesughukerchia@gmail.com",
+    "godfreyshekwoduzapada@gmail.com",
+    "stephenonalo81@gmail.com",
+    "a39143150@gmail.com",
+    "edwinpriscaloveth@gmail.com",
+    "lucyterkula@gnail.com",
+    "austinani2005@gmail.com",
+    "agnesagbeji55@gmail.com",
+    "obajoe95@gmail.com",
+    "josephomiyinka@gmail.com",
+    "anonimousxapx@gmail.com",
+    "peterajeni@gmail.com",
+    "amosekuma165@gmail.com",
+    "mercyonuh00@gmail.com",
+    "ibrahimaugustine17@gmail.com",
+    "umorenkingsley14@gmail.com",
+    "paulokorie867@gmail.com",
+    "abbamiracle973@gmail.com",
+    "cjben345@gmail.com",
+    "daboeremmanuel090@gmail.com",
+    "innocentking9am@gmail.com",
+    "okorodorris@gmail.com",
+    "ogbejohn202@gmail.com",
+    "john.olorunfe@gmail.com",
+    "umehbenjaminakpar@gmail.com",
+    "ajiboyemichael09@gmail.com",
+    "gladysboluwatife3@gmail.com",
+    "yinlagha4real@gmail.com",
+    "josephlabaranadigizi@gmail.com",
+    "godwinwisdom07@gmail.com",
+    "pauloosiky12@gmail.com",
+    "ambrose.m1904218@st.futminna.edu.ng",
+    "johnsonadamseleojo@gmail.com",
+    "johnojonugwa2000@gmail.com",
+    "onumeesther@gmail.com",
+    "Emmanuelonuoha301@gmail.com",
+    "cleopatracleopetra@gmail.com",
+    "sharalfred99@gmail.com",
+    "estherhanna360@gmail.com",
+    "joycechidalu@gmail.com",
+    "onipefredrica@gmail.com",
+    "bubejoseph@gmail.com",
+    "raphaelphilip125@gmail.com",
+    "elizabethnene17@gmail.com",
+    "ezejacollintins@gmail.com",
+    "louisdanie838@gmail.com",
+    "igbonekwuemmanuel7@gmail.com",
+    "atsewejoshua@gmail.com",
+    "denothomzy2488@gmail.com",
+    "tm6453041@gmail.com",
+    "okemeemmanuel66@gmail.com",
+    "bheevanglory.ab@gmail.com",
+    "christianabah98@gmail.com",
+    "timothyokolo321@gmail.com",
+    "ihenyenitohan@gmail.com",
+    "jacobgenda001@gmail.com",
+    "emmanuelagov127@gmail.com",
+    "danielmicheal891@gmail.com",
+    "johnblazzy360@gmail.com",
+    "udochukwud900@gmail.com",
+    "cynthiaaraga@gmail.com",
+    "faithogbobe6046@gmail.com",
+    "emmanueloche56@gmail.com",
+    "fadekemiayomide66@gmail.com",
+    "nwagboifeanyi@gmail.com",
+    "veronicaezenwafor41@gmail.com",
+    "yerimakaka21@gmail.com",
+    "michaelabakpa83@gmail.com",
+    "amadiblaze1207@gmail.com",
+    "ogbadoyiene@gmail.com",
+    "onyochoemmanuel1999@gmail.com",
+    "michaelaleyama1234@gmail.com",
+    "onyinyesylviasylvia@gmail.com",
+    "annjoseph0002@gmail.com",
+    "ajinomohemmanuel1@gmail.com",
+    "wuesejosephine@gmail.com",
+    "akubohjustice01@gmail.com",
+    "avongsimeon@gmail.com",
+    "ojonugwa.godswill@gmail.com",
+    "dashejephthah4@gmail.com",
+    "aliyuzakkaray@gmail.com",
+    "emmanuelchigozie001@gmail.com",
+    "aaronbawa3@gmail.com",
+    "shedrackogbole842@gmail.com",
+    "felixmercy021@gmail.com",
+    "nceciliaseember@gmail.com",
+    "remedy123.ms@gmail.com",
+    "elizabethameh847@gmail.com",
+    "smartparaclete@gmail.com",
+    "lukajosh5827@gmail.com",
+    "nwaokolomarvin12@gmail.com",
+    "mmmaikudi2004@gmail.com",
+    "ochohepo.m2205150@st.futminna.edu.ng",
+    "ugwuezephilomina@gmail.com",
+    "linusjohnpaul@gmail.com",
+    "victorneche75@gmail.com",
+    "odedaramicheal5@gmail.com",
+    "dennisbija234@gmail.com",
+    "terwaseungwanen@gmail.com",
+    "machijapheth@gmail.com",
+    "emmanueladaikwu@gmail.com",
+    "audutheophilus98@gmail.com",
+    "emmanuelterngu20@gmail.com",
+    "idacheakubophilip@gmail.com",
+    "talk2danny211@gmail.com",
+    "princessotora1@gmail.com",
+    "ikshalom18@gmail.com",
+    "enizyjane42@gmail.com",
+    "francisdiyoke90@gmail.com",
+    "abrahamsunday08@gmail.com",
+    "ezemmstephen@gmail.com",
+    "obichristian76@gmail.com",
+    "daviduru65@gmail.com",
+    "emmanuelwilfredochai@gmail.com",
+    "ufomadustephen9@gmail.com",
+    "akpaemmanuel2018@gmail.com",
+    "ichaibucc2k2@gmail.com",
+    "ojodugbowaemma@gmail.com",
+    "patienceanthony508@gmail.com",
+    "victormosesaugustine@gmail.com",
+    "johnadeiza9@gmail.com",
+    "maseshinjude@gmail.com",
+    "datoegoemmary@gmail.com",
+    "jmartinsogbobe22@gmail.com",
+    "ritakase64@gmail.com",
+    "Ogbmatthew@gmail.com",
+    "jirgbasandra@gmail.com",
+    "lanshimabenjamin@gmail.com",
+    "samuelgabriel2017@yahoo.com",
+    "paulinusubi@yahoo.com",
+    "bonifacepad@gmail.com",
+    "iameuro700@gmail.com",
+    "judeekokotu28@gmail.com",
+    "anatedebbie46@gmail.com",
+    "dorathydoowuese54@gmail.com",
+    "okonjiraphael23@gmail.com",
+    "omascode@yahoo.com",
+    "oyindamolalucy@gmail.com",
+    "juiletjohn297@gmail.com",
+    "dorisfrancis222@gmail.com",
+    "enduranceokameh@gmail.com",
+    "sabastinefelicia@gmail.com",
+    "damianadaro1@gmail.com",
+    "jossyateks@gmail.com",
+    "stephenayaka17@gmail.com",
+    "valnwosu2345@gmail.com",
+    "manassehiorhen@gmail.com",
+    "gemanasolomon5@gmail.com",
+    "ellasolomon685@gmail.com",
+    "anneijiga@gmail.com",
+    "mathiasmancha14@gmail.com",
+    "xzav.deziar@gmail.com",
+    "bivanfaith19@gmail.com",
+    "agnesadams901@gmail.com",
+    "akorowoichochris5@gmail.com",
+    "ogwuchemichaelogbole@gmail.com",
+    "celestineemmanuel6@gmail.com",
+    "samuelitoya03@gmail.com",
+    "adarosunday@gmail.com",
+    "adaroandrew@gmail.com",
+    "nehemiahsani9@gmail.com",
+    "maakipat4579@gmail.com",
+    "gracejoseph1998@gmail.com",
+    "innocentitodo1960@gmail.com",
+    "viviaana8@gmail.com",
+    "osogwuvitalis@gmail.com",
+    "amehregina7@gmail.com",
+    "valeriachidera0@gmail.com",
+    "joyuwakwe65@gmail.com",
+    "unimkefredrick@gmail.com",
+    "sullyjake911@gmail.com",
+    "peaceoyiza15@gmail.com",
+    "ocheme.godwin.9@gmail.com",
+    "omonoreno29@gmail.com",
+    "mrkane340@gmail.com",
+    "abbetrynity1@gmail.com",
+    "fs7634349@gmail.com",
+    "vincentmaigida@gmail.com",
+    "donjoshb070@gmail.com",
+    "kelechukwuconstance@gmail.com",
+    "petererina85@gmail.com",
+    "calisteronuoha0003@gmail.com",
+    "ojoomohkafe@gmail.com",
+    "tyokasehellen38@gmail.com",
+    "egwim.jones16@gmail.com",
+    "gagerhoda0@gmail.com",
+    "rhodagaga1@gmail.com",
+    "papayannopoulosangeliki@gmail.com",
+    "rotherhenry69@gmail.com",
+    "da.vi.da.pau1805@gmail.com",
+    "eneapeprince76@gmail.com",
+    "abutuemmanuel91@gmail.com",
+    "mariebert792@gmail.com",
+    "calebbolu99@gmail.com",
+    "princesseunice202@gmail.com",
+    "christinaadetunji3@gmail.com",
+    "patisah84@gmail.com",
+    "pattagrace34@gmail.com",
+    "brighthelena0@gmail.com",
+    "mcdonald.cm7@gmail.com",
+    "achemmercyojochegbe@gmail.com",
+    "sabivalparagon@gmail.com",
+    "joyr1233@gmail.com",
+    "iwuamadijoy123@gmail.com",
+    "elothonia@gmail.com",
+    "krystalpeddy@gmail.com",
+    "nzubejane0249@gmail.com",
+    "stazykyrien@gmail.com",
+    "ofodumchukwuebuka0@gmail.com",
+    "emekosjames@gmail.com",
+    "ikechukwujosephnonso@gmail.com",
+    "jenniferiliya11@gmail.com",
+    "atamadaniel17@gmail.com",
+    "jozinjoy@gmail.com",
+    "stanleystainless123@gmail.com",
+    "josephkwaghhua@gmail.com",
+    "emmyc610@gmail.com",
+    "obanor.m1703262@st.futminna.edu.ng",
+    "chibuezechris85@gmail.com",
+    "oshanubiemmanuel@gmail.com",
+    "oboniojochenemi@gmail.com",
+    "sandraemakpose@gmail.com",
+    "balogunoyakhilome@gmail.com",
+    "ojotulecharity200@gmail.com",
+    "akannohclinton@gmail.com",
+    "anthonysundayadakole@gmail.com",
+    "augustineonuorah8@gmail.com",
+    "jtaiwo909@gmail.com",
+    "ahmadkidx@gamil.com",
+    "ezekielnnamdi3@gmail.com",
+    "fxproinvestmen2tcompany@gmail.com",
+    "aliyumariam880@gmail.com",
+    "adikwu.m1702432@st.futminna.edu.ng",
+    "segunvictor760@gmail.com",
+    "nderkeren@gmail.com",
+    "jaywonprovis@gmail.com",
+    "ganagodswill69@gmail.com",
+    "sarafinamarkus83@gmail.com",
+    "benjaminjohn704@gmail.com",
+    "nanretjoshua6@gmail.com",
+    "omonineja@gmail.com",
+    "victorajijolajesu@gmail.com",
+    "ifeanyiikwuso6@gmail.com",
+    "eze.m1702519@st.futminna.edu.ng",
+    "Abrahamgwazali0@gmail.com",
+    "kelvinjenom@gmail.com",
+    "engrzyfer@gmail.com",
+    "bastianechuqs017@gmail.com",
+    "raphaelleo19@gmail.com",
+    "eranael22@gmail.com",
+    "abutue10@gmail.com",
+    "ozodiebubefabian@gmail.com",
+    "jecintang665@gmail.com",
+    "enanoochajr@gmail.com",
+    "onahpeter2001@gmail.com",
+    "Ponmile63@gmail.com",
+    "munachiohanaka16@gmail.com",
+    "www.st.ishom504@gmail.com",
+    "maryanneze2019@gmail.com",
+    "annanukege@gmail.com",
+    "yohannagodswill3@gmail.com",
+    "autajoyce@gmail.com",
+    "edwinauhiara@gmail.com",
+    "chukwumavictoria97@gmail.com",
+    "innocentking9am@gmail.com",
+    "egyptianlinuz@gmail.com",
+    "idupatienceonyeche@gmail.com",
+    "xfactortonia@gmail.com",
+    "aghaisidora@gmail.com",
+    "augustine12355@gmail.com",
+    "anthonydaniel858@gmail.com",
+    "malulubem@gmail.com",
+    "nwankwo.m1703407@st.futminna.edu.ng",
+    "johnslide2525@gmail.com",
+    "susannaaduku11@gmail.com",
+    "jiminjudith2017@gmail.com",
+    "aondoakaafelix3@gmail.com",
+    "estheradewale018@gmail.com",
+    "andybestabc@gmail.com",
+    "nehemiahsani9@gmail.com",
+    "donakunne@gmail.com",
+    "richard.m2200992@st.futminna.edu.ng",
+    "chidoziealoh@gmail.com",
+    "johnadole2016@gmail.com",
+    "nuellahenry360@gmail.com",
+    "divinevyn@gmail.com",
+    "odebenedict090@gmail.com",
+    "sylviakris7@gmail.com",
+    "Nwikefaustine75@gmail.com",
+    "fadamonaco@gmail.com",
+    "adamsomale20@gmail.com",
+    "daviduru65@gmail.com",
+    "amehpaul2003@gmail.com",
+    "ugatersoo@gmail.com",
+    "toseesirus@gmail.com",
+    "charlesclinton2003@gmail.com",
+    "bennygray265@gmail.com",
+    "meshackchristiana@gmail.com",
+    "itodojohn912@gmail.com",
+    "owoichojoshuaodinya@gmail.com",
+    "agbofaith644@gmail.com",
+    "unekwuakuboemmanuel@gmail.com",
+    "cynthianukege@gmail.com",
+    "peterprestige2@gmail.com",
+    "kolokelvin53@gmail.com",
+    "iorhunagodwin07@gmail.com",
+    "omeyi2002@gmail.com",
+    "onojapaul123@gmail.com",
+    "majivictor20@gmail.com",
+    "bcr10ozil@gmail.com",
+    "ajomark28@gmail.com",
+    "umarmani247@gmail.com",
+    "ezeinnocentchidozie@gmail.com",
+    "onuohagladys4@gmail.com",
+    "amakanganyadi@gmail.com",
+    "chindabarotdung@gmail.com",
+    "michaelachika280@gmail.com",
+    "ikyeghjoy1998@gmail.com",
+    "justbulkk@gmail.com",
+    "peterpomah@gmail.com",
+    "manukajiugochi4@gmail.com",
+    "kuanumrobert@gmail.com",
+    "thomasstephen617@gmail.com",
+    "apehmary1999@gmail.com",
+    "leoxavieretok@gmail.com",
+    "jokayode20@gmail.com",
+    "omotpeji@gmail.com",
+    "uchechukwucharlesagoha@gmail.com",
+    "ayegbangbede09@gmail.com",
+    "amanzejoseph5@gmail.com",
+    "comfortonche1@gmail.com",
+    "chiamax699@gmail.com",
+    "amoduedwin28@gmail.com",
+    "ritakase64@gmail.com",
+    "danielyakubuu88@gmail.com",
+    "ibrahimabigail005@gmail.com",
+    "ablyallen45@gmail.com",
+    "estherozioma321@gmail.com",
+    "annasthesiakato.kato2069@gmail.com",
+    "stalet406@gmail.com",
+    "otenedaniel60@gmail.com",
+    "christopheroluchivivian@gmail.com",
+    "thommyhat656@gmail.com",
+    "jamesjosiah397@gmail.com",
+    "michaelterseeridyu13@gmail.com",
+    "martinsigbudu546@gmail.com",
+    "terwasemsugh1@gmail.com",
+    "oyizaonumanyi@gmail.com",
+    "korodopaul18@gmail.com",
+    "Itsfortune16@gmail.com",
+    "Joelfortune16@gmail.com",
+    "zaccheausjb@gmail.com",
+    "isahqueen321@gmail.com",
+    "kingsleybarde44@gmail.com",
+    "jeremiahdamjuma@gmail.com",
+    "francis28832@gmail.com",
+    "ugwuanyiperpetuachioma@gmail.com",
+    "omalephilip65@gmail.com",
+    "treasurevictor1330@gmail.com",
+    "izekwendubuisi@gmail.com",
+    "ikitaalyosha@gmail.com",
+    "enakeherifaith6@gmail.com",
+    "katoreric1@gmail.com",
+    "nelex505@gmail.com",
+    "ngodesambo@gmail.com",
+    "ambroseadejoh@gmail.com",
+    "josephsixtus4@gmail.com",
+    "stanokonkwo821@gmail.com",
+    "kinggodwinex@gmail.com",
+    "nonsojude075@gmail.com",
+    "samjhn674@gmail.com",
+    "paul.m2303388@st.futminna.edu.ng",
+    "georgeanande@gmail.com",
+    "ogbolodoemma39@gmail.com",
+    "osutukndifreke@gmail.com",
+    "jessicaagbor251@gmail.com",
+    "olemotseofikhenua@gmail.com",
+    "eyopdeborah@gmail.com",
+    "emmanuelogacheko75@gmail.com",
+    "nguaterjames@gmail.com",
+    "benedicttyoule9@gmail.com",
+    "johnsonadamseleojo@gmail.com",
+    "joyukpabia88@gmail.com",
+    "apehinnocent2020@gmail.com",
+    "get2abeloodo@gmail.com",
+    "joelfortune16@gmail.com",
+    "nwogujessica24@gmail.com",
+    "peacedavidagene804@gmail.com",
+    "ochememonic@gmail.com",
+    "estherodunu01@gmail.com",
+    "zachariahdaniel1433@gmail.com",
+    "offoremmatule@gmail.com",
+    "jacobemmanuel3202@gmail.com",
+    "mykellachika508@gmail.com",
+    "alexanderajah7@gmail.com",
+    "joan07016718511@gmail.com",
+    "abuhanthony09@gmail.com",
+    "oniketuadunni2005@gmail.com",
+    "silasbala3@gmail.com",
+    "estherfrancis556@gmail.com",
+    "victorkaburu595@gmail.com",
+    "chibunnamoses101@gmail.com",
+    "kingsleyomah44@gmail.com",
+    "ojonefrancis6@gmail.com",
+    "ezugwusarah2@gmail.com",
+    "victordennis1997@gmail.com",
+    "obago4u@gmail.com",
+    "solomonoraya5@gmail.com",
+    "nehemiahbishara67@gmail.com",
+    "faustinajoe2003@gmail.com",
+    "emmachigo123@gmail.com",
+    "feliciajoseph20221@gmail.com",
+    "ajahngozi18@gmail.com",
+    "jchimezie2006@gmail.com",
+    "lovethjoel75@gmail.com",
+    "iorhunagodwin07@gmail.com",
+    "fredojotule93@gmail.com",
+    "blessedjunior543@gmail.com",
+    "christophergoodness090@gmail.com",
+    "mnguwuesenenge@gmail.com",
+    "agubamakelvin35@gmail.com",
+    "frankebeledike@gmail.com",
+    "emmanuelaugustine160@gmail.com",
+    "eneapeprince76@gmail.com",
+    "dictazion@gmail.com",
+    "gloriabitrus506@gmail.com",
+    "ogwucheehi@gmail.com",
+    "drealval05@gmail.com",
+    "timbirdavid@gmail.com",
+    "ponmile63@gmail.com",
+    "ishakumolima@gmail.com",
+    "umanukaji@gmail.com",
+    "francispatience2525@gmail.com",
+    "sylvestercharles69@gmail.com",
+    "omalephilip65@gmail.com",
+    "udethomas2018@gmail.com",
+    "ibofafrica@gmail.com",
+    "onlystarr2001@gmail.com",
+    "judeogbuefi123@gmail.com",
+    "udojiemmanuella1@gmail.com",
+    "augustinaojah@gmail.com",
+    "cisco11735@gmail.com",
+    "tyogyer1@gmail.com",
+    "atawodimmanuella@gmail.com",
+    "www.dominicecool@gmail.com",
+    "anayochukwudivine1@gmail.com",
+    "mikeflashhy001@gmail.com",
+    "alonathaniel@gmail.com",
+    "nehemiahbishara67@gmail.com",
+    "johnweng501@gmail.com",
+    "enakeheriokiemute2@gmail.com",
+    "geraldohineme@gmail.com",
+    "ochigbo105@gmail.com",
+    "dankyangkuyet@gmail.com",
+    "prosperugochukwu93@gmail.com",
+    "ioodo7374@gmail.com",
+    "jamessunday092086@gmail.com",
+    "judepraize3@gmail.com",
+    "blonzeej@gmail.com",
+    "oriendbecca@gmail.com",
+    "amosrosemary75@gmail.com",
+    "funmiojames2000@gmail.com",
+    "pascalprotocol@gmail.com",
+    "alexandermusa19@gmail.com",
+    "ukematthew100@gmail.com",
+    "chrisiyke0100@gmail.com",
+    "abuhdanny@gmail.com",
+    "davidagenegabriel86@gmail.com",
+    "okwutebasil01@gmail.com",
+    "aniekwerichard@gmail.com",
+    "lawrenciamaryagbam@gmail.com",
+    "chizzyraph2023@gmail.com",
+    "joysogbossi@gmail.com",
+    "faithmichael045@gmail.com",
+    "ariafidelisukai@gmail.com",
+    "aulawaalherijohn@gmail.com",
+    "ochepaul419@gmail.com",
+    "danielsmile960@gmail.com",
+    "nancyakule52@gmail.com",
+    "michaelvincent651@gmail.com",
+    "sarah.m1802543@st.futminna.edu.ng",
+    "treasurevictor1330@gmail.com",
+    "emmanuelakpebele@gmail.com",
+    "abuhe183@gmail.com",
+    "peterottanwa@gmail.com",
+    "susanedeh2@gmail.com",
+    "erastusovye@gmail.com",
+    "gistwithgozie6@gmail.com",
+    "moyibo302@gmail.com",
+    "maxaugustine2001@gmail.com",
+    "onomzagemma@gmail.com",
+    "austinameh007@gmail.com",
+    "amakaaronu33@gmail.com",
+    "ogargabriel2468@gmail.com",
+    "kyaagbasamuel@gmail.com",
+    "slmnonalo@gmail.com",
+    "egohclinton592@gmail.com",
+    "felixrachael330@gmail.com",
+    "victoriachidinma152@gmail.com",
+    "kukulahtsan@gmail.com",
+    "chukwuchristian360@gmail.com",
+    "judesunday411@gmail.com",
+    "miracleombugadu50@gmail.com",
+    "peteradukwu37@gmail.com",
+    "hunjadnl@gmail.com",
+    "desireking708@gmail.com",
+    "phioduma144@gmail.com",
+    "dominicichaibu@gmail.com",
+    "samuelagbane@gmail.com",
+    "piusgodsave@gmail.com",
+    "sundayameka292@gmail.com",
+    "tonyrizy3131@gmail.com",
+    "augustine1990s@gmail.com",
+    "samuelwisdom56@gmail.com",
+    "ezestella2002@gmail.com",
+    "marvellijeoma@gmail.com",
+    "okechukwujoanm@gmail.com",
+    "williamstyayock@gmail.com",
+    "queendeborahigomu@gmail.com",
+    "asonyeugochukwu51@gmail.com",
+    "tp1774005@gmail.com",
+    "ogwuchemichaelogbole@gmail.com",
+    "isabellaaronu@gmail.com",
+    "samuelfrancis323@gmail.com",
+    "elijahiliyad518@gmail.com",
+    "onukagodwininalegwu@gmail.com",
+    "chukujipromise35@gmail.com",
+    "dominionojirima@gmail.com",
+    "silasdanlamimakama@gmail.com",
+    "Samuelogbole999@gmail.com",
+    "achiemmanuelekenechi@gmail.com",
+    "igbacharles1@gmail.com",
+    "kambaiemmanuel45@gmail.com",
+    "emmanuellasule2000@gmail.com",
+    "Akorjohn994@gmail.com",
+    "abalakapatience1@gmail.com",
+    "odekekingsley75@gmail.com",
+    "oozigiesther2@gmail.com",
+    "bitrusayuba400@gmail.com",
+    "shedrackogbole35@gmail.com",
+    "ugwokecelestineesomchi@yahoo.com",
+    "obilikwupeteragaba5@gmail.com",
+    "nnedenuoluchi@gmail.com",
+    "amaunmwosa205@gmail.com",
+    "jumiaaejeh@gmail.com",
+    "gistwithumehchinecherem29@gmail.com",
+    "chibuokedavid090@gmail.com",
+    "wisdomogbo38@gmail.com",
+    "ogbonnashedrack22@gmail.com",
+    "davidezefriday@gmail.com",
+    "ogbonnashedrack22@gmail.com",
+    "priscillajohn362@gmail.com",
+    "mimahpeters80@gmail.com",
+    "nelliej724@gmail.com",
+    "benedictisaac258@gmail.com",
+    "itodoaustine29@gmail.com",
+    "chukwudinmajohn8@gmail.com",
+    "adekemifaustinaajibade@gmail.com",
+    "klarnihestozil@gmail.com",
+    "odiisamuel@gmail.com",
+    "ezep206@gmail.com",
+    "ogwuchejohn081@gmail.com",
+    "donaldnwajiaku@gmail.com",
+    "onuchijoanda@gmail.com",
+    "kanola360@gmail.com",
+    "emmanuelnganyadi81@gmail.com",
+    "umehdoris04@gmail.com",
+    "onahkenneth460@gmail.com",
+    "ekwuemevictoria2005@gmail.com",
+    "idideborah2001@gmail.com",
+    "oryimantor45@gmail.com",
+    "centpaul01@gmail.com",
+    "Epoxide7@gmail.com",
+    "mhizpreshy2006@gmail.com",
+    "jchukwuani2@gmail.com",
+    "adagedosolomon52@gmail.com",
+    "anekwengozi0@gmail.com",
+    "shedrachochai2020@gmail.com",
+    "favourokafor431@gmail.com",
+    "aliogbafaith200@gmail.com",
+    "treasurevictor1330@gmail.com",
+    "peejaylux1@gmail.com",
+    "geraldalex444@gmail.com",
+    "bukolavictor0@gmail.com",
+    "gwazamlumun@gmail.com",
+    "rufusizunna@gmail.com",
+    "sani.m2204465@st.futminna.edu.ng",
+    "osimhegaemmanuel@gmail.com",
+    "okaformarychichebem@gmail.com",
+    "nganwuchiemmanuel3@gmail.com",
+    "apaafelix07@gmail.com",
+    "maxwellmirax@gmail.com",
+    "orjimaryjullie@gmail.com",
+    "aluorshater@gmail.com",
+    "marvellousaugustine841@gmail.com",
+    "onyiastephen4@gmail.com",
+    "ravensmith0317@gmail.com",
+    "econstantinezidyeb@gmail.com",
+    "dawamkhy@gmail.com",
+    "piusyerima686@gmail.com",
+    "chukwuemelieogu321@gmail.com",
+    "johnadavonum@gmail.com",
+    "olowu10tony@gmail.com",
+    "jd107500@gmail.com",
+    "kingsleychang19@gmail.com",
+    "alexandrakumbur@gmail.com",
+    "democracy701@gmail.com",
+    "abuhanthony09@gmail.com",
+    "onagaosas@gmail.com",
+    "emmanuelalphonsus76@gmail.com",
+    "michaelphyna11@gmail.com",
+    "ugbedevincent919@gmail.com",
+    "joviachiamaka@gmail.com",
+    "johnochesamuel@gmail.com",
+    "msughterseer127@gmail.com",
+    "kennethisaac1745@gmail.com",
+    "izuakorchinedu53@gmail.com",
+  ].map((email) => email.toLowerCase());
+
+  const handleVerifyEmail = async () => {
+    setIsLoading(true);
+    const isValid = emails.includes(email.toLowerCase());
+    setIsVerified(isValid);
+    setIsLoading(false);
+  };
+
+  const goToVotePage = () => {
+    router.push("/vote");
   };
 
   return (
-    <div>
-      <div className="flex flex-col items-center justify-center mx-3 font-sans pt-7 gap">
-        <h2 className="text-lg font-light lg:text-2xl ">NOX AMORIS AWARDS</h2>
-        <h2 className="text-lg lg:text-3xl font-extrabold text-[#2E7D32]">
-          YOU MAY CAST YOUR VOTES!
-        </h2>
-        <ul>
-          {categories.map((category) => (
-            <li
-              key={category.id}
-              className="py-2 my-3 rounded-lg lg:my-5 lg:px-7"
-            >
-              <div className="flex flex-col items-center justify-center w-full my-7">
-                <h1 className="font-bold">{category.name}</h1>
-                <div className="flex flex-wrap items-center justify-center h-full gap-4 mt-2 lg:mt-7 lg:gap-4">
-                  {Object.values(category.candidates).map(
-                    (candidate, index) => (
-                      <div
-                        key={candidate.name}
-                        onClick={() => {
-                          handleCandidateSelect(category.id, candidate.name);
-                        }}
-                        className={` ${
-                          selectedCandidates[category.id] === candidate.name
-                            ? "ring-2 ring-red-400 rounded-lg"
-                            : "ring-1 ring-(--primary) rounded-lg"
-                        }`}
-                      >
-                        <CandidateCard
-                          name={candidate.name}
-                          imageUrl={candidate.imageurl}
-                        />
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <button className="bg-(--primary) text-sm md:text-xl text-(--secondary) h-10 lg:h-10 w-full rounded-xl  font-bold ">
-          Submit Votes
+    <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-tr from-(--primary) via-(--secondary)  to-(--tertiary)">
+      <div className="w-full max-w-lg p-8 bg-white shadow-xl bg-opacity-90 rounded-3xl">
+        <h1 className="mb-4 text-3xl font-bold text-center text-gray-900 select-none">
+          Login Page
+        </h1>
+        <p className="mb-8 text-center text-gray-700 select-none">
+          Please enter your email you registered in the NFCS Bio-Data form
+        </p>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
+          className="w-full p-3 mb-6 transition border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-(--primary)/30 select-none"
+        />
+        <button
+          onClick={handleVerifyEmail}
+          disabled={isLoading}
+          className="w-full py-3 font-semibold text-white transition bg-(--primary) shadow-md hover:bg-(--primary)/80 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
+        >
+          {isLoading ? "Verifying..." : "Verify Email"}
         </button>
+        {isVerified !== null && (
+          <p
+            className={`mt-8 text-center text-lg font-medium ${
+              isVerified ? "text-green-600" : "text-red-600"
+            } select-none`}
+          >
+            Email is {isVerified ? "valid" : "invalid"}.
+          </p>
+        )}
+        {isVerified && (
+          <p
+            className="mt-4 text-center text-gray-600 hover:underline"
+            onClick={() => {
+              goToVotePage();
+            }}
+          >
+            <span>Proceed to vote &rarr;</span>
+          </p>
+        )}
       </div>
     </div>
   );
 };
 
-export default page;
+export default LoginPage;
