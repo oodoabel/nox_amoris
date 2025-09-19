@@ -12,28 +12,16 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Category {
-  id         Int        @id @default(autoincrement())
-  name       String
-  candidates Candidate[]
-  createdAt  DateTime   @default(now())
-}
-
-model Candidate {
-  id         Int        @id @default(autoincrement())
-  name       String
-  category   Category   @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  votes      Vote[]
-  createdAt  DateTime   @default(now())
-}
-
 model Vote {
-  id          Int        @id @default(autoincrement())
-  candidate   Candidate  @relation(fields: [candidateId], references: [id])
-  candidateId Int
-  userId      String     // simple identifier, could be session or IP
-  createdAt   DateTime   @default(now())
-
-  @@unique([candidateId, userId]) // prevents duplicate votes by same user
+  id         String      @id @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  voterEmail String
+  candidate  String
+  category   String
+  totalVotes Int      @default(0)
+  
+  @@unique([voterEmail, category])
+  @@index([category])
+  @@index([candidate])
 }
