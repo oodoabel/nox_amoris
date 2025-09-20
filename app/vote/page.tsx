@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import { allCategories, vote } from "@/actions/vote";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 // Map of categoryId -> candidateId
 type SelectionMap = Record<string, string>;
@@ -10,6 +11,8 @@ const Page = () => {
   const [selectedCandidates, setSelectedCandidates] = useState<SelectionMap>({});
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const router = useRouter();
 
   const fetchCanidates = async () => {
     try {
@@ -34,8 +37,16 @@ const Page = () => {
   };
 
   const handleVoteSubmission = async () => {
-    const response = await vote("austinameh007@gmail.com", selectedCandidates);
+    const response = await vote("cmfsk694e0001pl8ow07h6fq6", selectedCandidates);
     console.log({ response });
+
+    if (response.status == "success") {
+      toast.success(response.message || "Your votes have been submitted successfully.")
+      router.push("/")
+      return;
+    }
+
+    toast.error(response.message || "An error occurred while processing your request.");
   };
 
   const selectedCount = useMemo(
@@ -186,7 +197,7 @@ const Page = () => {
                 <span className="font-semibold text-slate-800"> {totalCategories}</span> categories
               </div>
               <button
-                className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white bg-emerald-600 rounded-xl shadow hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full cursor-pointer sm:w-auto inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white bg-emerald-600 rounded-xl shadow hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => handleVoteSubmission()}
                 disabled={selectedCount === 0}
                 aria-disabled={selectedCount === 0}
