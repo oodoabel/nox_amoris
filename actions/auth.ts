@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { cookies } from "next/headers";
 
 export type TResponse = {
   status: "success" | "failed" | "error";
@@ -18,6 +19,13 @@ export async function verifyEmail(email: string): Promise<TResponse> {
         code: 404,
         message: "Email not registered",
       };
+
+    (await cookies()).set("session", user.id, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
 
     return {
       status: "success",

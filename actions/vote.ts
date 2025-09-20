@@ -3,24 +3,24 @@
 import prisma from "@/lib/prisma";
 import { TResponse } from "./auth";
 import { Category } from "@/generated/prisma";
+import { cookies } from "next/headers";
 
 export const vote = async (
-  userId: string,
   votes: Record<string, string>
 ): Promise<TResponse> => {
   try {
-    const cast = Object.entries(votes).map(([categoryId, candidateId]) => {
-      return prisma.vote.create({
-        data: { candidateId, userId, categoryId },
-      });
+    const userId = (await cookies()).get("session")?.value!;
+    console.log({ userId, votes });
+
+    // Use a single, non-interactive transaction for all creates to avoid interactive tx timeouts
+    const operations = Object.entries(votes).map(([categoryId, candidateId]) =>
+      prisma.vote.create({ data: { candidateId, userId, categoryId } })
+    );
+
+    await prisma.$transaction(operations, {
+      timeout: 15000, // increase timeout to reduce "Transaction already closed" errors
+      maxWait: 10000, // wait up to 10s for a connection from the pool
     });
-    const response = await Promise.allSettled(cast);
-
-    console.log({ votes, response });
-
-    const failed = response.filter((r) => r.status == "rejected");
-
-    if (failed.length > 0) throw new Error("Failed to process vote");
 
     return {
       status: "success",
