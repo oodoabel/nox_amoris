@@ -26,7 +26,7 @@ model Vote {
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 
-  @@unique([candidateId, userId])
+  @@unique([candidateId, userId, categoryId])
 }
 
 model User {
