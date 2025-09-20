@@ -1,9 +1,6 @@
-"use client";
+"use server";
 
 import prisma from "@/lib/prisma";
-import { cookies } from "next/headers";
-
-export type Email = `${string}@${string}.${string}`;
 
 export type TResponse = {
   status: "success" | "failed" | "error";
@@ -12,7 +9,7 @@ export type TResponse = {
   data?: any;
 };
 
-export async function verifyEmail(email: Email): Promise<TResponse> {
+export async function verifyEmail(email: string): Promise<TResponse> {
   try {
     const user = await prisma.user.findFirst({ where: { email } });
     if (!user)
@@ -30,6 +27,7 @@ export async function verifyEmail(email: Email): Promise<TResponse> {
       },
     };
   } catch (error: any) {
+    console.log({ error: error.message });
     return {
       status: "error",
       code: 500,

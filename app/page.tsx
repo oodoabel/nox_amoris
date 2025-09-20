@@ -1,7 +1,9 @@
 "use client";
-import { Email, verifyEmail } from "@/actions/auth";
-import { useRouter } from "next/navigation";
+
 import React, { useState } from "react";
+import { verifyEmail } from "@/actions/auth";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export const useVerification = () => {
   const [verified, setVerified] = useState<boolean | null>(null);
@@ -11,16 +13,24 @@ export const useVerification = () => {
 const LoginPage = () => {
   const router = useRouter();
 
-  const [email, setEmail] = useState<Email>();
+  const [email, setEmail] = useState<string>("");
   const [isVerified, setIsVerified] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleVerifyEmail = async () => {
+  const handleVerifyEmail = async (e: React.FormEvent) => {
+    e.preventDefault()
+
     setIsLoading(true);
 
-    const verify = await verifyEmail(email!)
+    const verify = await verifyEmail(email)
     if (verify.status == "success") {
       setIsVerified(true)
+      toast.success("Email verified, redirectng...")
+      goToVotePage()
+    }
+    else {
+      toast.error(verify.message || "Failed to verify email")
+      console.log({ error: verify.code })
     }
 
     setIsLoading(false);
@@ -39,38 +49,23 @@ const LoginPage = () => {
         <p className="mb-8 text-center text-gray-700 select-none">
           Please enter your email you registered in the NFCS Bio-Data form
         </p>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
-          className="w-full p-3 mb-6 transition border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-(--primary)/30 select-none"
-        />
-        <button
-          onClick={handleVerifyEmail}
-          disabled={isLoading}
-          className="w-full py-3 font-semibold text-white transition bg-(--primary) shadow-md hover:bg-(--primary)/80 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
-        >
-          {isLoading ? "Verifying..." : "Verify Email"}
-        </button>
-        {isVerified !== null && (
-          <p
-            className={`mt-8 text-center text-lg font-medium ${isVerified ? "text-green-600" : "text-red-600"
-              } select-none`}
+        <form onSubmit={handleVerifyEmail}>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            className="w-full p-3 mb-6 transition border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-(--primary)/30 select-none"
+          />
+          <button
+            onClick={handleVerifyEmail}
+            disabled={isLoading}
+            className="w-full py-3 cursor-pointer font-semibold text-white transition bg-(--primary) shadow-md hover:bg-(--primary)/80 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
           >
-            Email is {isVerified ? "valid" : "invalid"}.
-          </p>
-        )}
-        {isVerified && (
-          <p
-            className="mt-4 text-center text-gray-600 hover:underline"
-            onClick={() => {
-              goToVotePage();
-            }}
-          >
-            <span>Proceed to vote &rarr;</span>
-          </p>
-        )}
+            {isLoading ? "Verifying..." : "Verify Email"}
+          </button>
+        </form>
       </div>
     </div>
   );
