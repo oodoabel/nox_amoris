@@ -37,6 +37,9 @@ const categoryData = [
 ];
 
 export default async function main() {
+  console.log("Clearing categories table...");
+  await prisma.category.deleteMany({});
+
   console.log("Start seeding categories...");
 
   for (const category of categoryData) {
@@ -51,5 +54,13 @@ export default async function main() {
   }
 
   console.log("Seeding finished.");
-  await prisma.$disconnect();
 }
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

@@ -483,7 +483,10 @@ const candidateData = {
   ],
 };
 
-export default async function main() {
+async function main() {
+  console.log("Clearing candidates table...");
+  await prisma.candidate.deleteMany({});
+
   console.log("Start seeding candidates...");
 
   for (const [categoryName, candidates] of Object.entries(candidateData)) {
@@ -517,5 +520,13 @@ export default async function main() {
   }
 
   console.log("Seeding finished.");
-  await prisma.$disconnect();
 }
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
