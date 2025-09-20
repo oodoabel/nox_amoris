@@ -4,7 +4,7 @@ import * as path from "path";
 
 const prisma = new PrismaClient();
 
-async function main() {
+export default async function main() {
   console.log("Start seeding users...");
 
   try {
@@ -31,14 +31,7 @@ async function main() {
     console.log("User seeding finished successfully.");
   } catch (error) {
     console.error("Error during user seeding:", error);
+  } finally {
+    await prisma.$disconnect();
   }
 }
-
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });

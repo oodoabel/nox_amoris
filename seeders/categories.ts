@@ -36,7 +36,7 @@ const categoryData = [
   { name: "Sports Personality of the Year (GK)" },
 ];
 
-async function main() {
+export default async function main() {
   console.log("Start seeding categories...");
 
   for (const category of categoryData) {
@@ -51,13 +51,5 @@ async function main() {
   }
 
   console.log("Seeding finished.");
+  await prisma.$disconnect();
 }
-
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
