@@ -1,9 +1,7 @@
-// scripts/seedCandidates.js
 import { PrismaClient } from "@/generated/prisma";
 
 const prisma = new PrismaClient();
 
-// This mapping connects category names to candidate data
 const candidateData = {
   "Best Clique (Bosso)": [
     {
@@ -509,7 +507,11 @@ async function main() {
         },
       });
       console.log(
-        `Created candidate: ${createdCandidate.name} in category: ${categoryName}`
+        `Created candidate: ${
+          createdCandidate.name
+        } in category: ${categoryName} :::: ${Math.floor(
+          (candidates.indexOf(candidate) / candidates.length) * 100
+        )}% Complete`
       );
     }
   }

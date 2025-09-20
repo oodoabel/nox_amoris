@@ -1,4 +1,3 @@
-// scripts/seedCategories.js
 import { PrismaClient } from "@/generated/prisma";
 const prisma = new PrismaClient();
 
@@ -44,7 +43,11 @@ async function main() {
     const createdCategory = await prisma.category.create({
       data: category,
     });
-    console.log(`Created category: ${createdCategory.name}`);
+    console.log(
+      `Created category: ${createdCategory.name} :::: ${Math.floor(
+        (categoryData.indexOf(category) / categoryData.length) * 100
+      )}% Complete`
+    );
   }
 
   console.log("Seeding finished.");
