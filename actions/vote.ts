@@ -17,10 +17,7 @@ export const vote = async (
       prisma.vote.create({ data: { candidateId, userId, categoryId } })
     );
 
-    await prisma.$transaction(operations, {
-      timeout: 15000, // increase timeout to reduce "Transaction already closed" errors
-      maxWait: 10000, // wait up to 10s for a connection from the pool
-    });
+    await prisma.$transaction(operations);
 
     return {
       status: "success",

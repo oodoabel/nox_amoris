@@ -5,11 +5,6 @@ import { verifyEmail } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-export const useVerification = () => {
-  const [verified, setVerified] = useState<boolean | null>(null);
-  return { verified, setVerified };
-};
-
 const LoginPage = () => {
   const router = useRouter();
 
