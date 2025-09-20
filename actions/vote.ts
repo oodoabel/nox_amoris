@@ -28,6 +28,7 @@ export const vote = async (
       message: "Voting successful",
     };
   } catch (error: any) {
+    console.error("Error in vote function:", error);
     return {
       status: "error",
       code: 500,
@@ -41,9 +42,43 @@ export async function allCategories(): Promise<Category[] | null> {
     include: { candidates: true },
   });
 
-  console.log({ categories });
-
   if (!categories) return null;
 
   return categories;
+}
+
+// Aggregated results: categories with candidates and their vote counts
+export type ResultCandidate = {
+  id: string;
+  name: string;
+  image?: string | null;
+  votes: number;
+};
+
+export type ResultCategory = {
+  id: string;
+  name: string;
+  candidates: ResultCandidate[];
+};
+
+export async function allResults(): Promise<ResultCategory[]> {
+  const cats = await prisma.category.findMany({
+    include: {
+      candidates: {
+        include: { _count: { select: { votes: true } } },
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+
+  return cats.map((c) => ({
+    id: c.id,
+    name: c.name,
+    candidates: c.candidates.map((cd) => ({
+      id: cd.id,
+      name: cd.name,
+      image: cd.image ?? null,
+      votes: (cd as any)._count?.votes ?? 0,
+    })),
+  }));
 }
