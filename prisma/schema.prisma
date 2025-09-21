@@ -13,15 +13,54 @@ datasource db {
 }
 
 model Vote {
-  id         String      @id @default(cuid())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  voterEmail String
-  candidate  String
-  category   String
-  totalVotes Int      @default(0)
-  
-  @@unique([voterEmail, category])
-  @@index([category])
-  @@index([candidate])
+  id String @id @default(cuid())
+
+  candidateId String
+  userId      String
+  categoryId  String
+
+  candidate Candidate @relation(fields: [candidateId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  category  Category  @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@unique([candidateId, userId, categoryId])
+}
+
+model User {
+  id       String  @id @default(cuid())
+  email    String  @unique
+  hasVoted Boolean @default(false)
+
+  votes Vote[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Candidate {
+  id    String  @id @default(cuid())
+  name  String
+  image String?
+
+  votes Vote[]
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Category {
+  id   String @id @default(cuid())
+  name String
+
+  candidates Candidate[]
+  votes      Vote[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
