@@ -1,8 +1,5 @@
-"use client"
-
 import React from "react";
 import { allResults, type ResultCategory } from "@/actions/vote";
-import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 function EmptyState() {
@@ -99,8 +96,6 @@ function CategoryCard({ category }: { category: ResultCategory }) {
 }
 
 export default async function ResultPage() {
-
-    const router = useRouter()
 
     const response = await allResults()
 
