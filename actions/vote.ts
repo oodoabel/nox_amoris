@@ -10,6 +10,14 @@ export const vote = async (
 ): Promise<TResponse> => {
   try {
     const userId = (await cookies()).get("session")?.value!;
+
+    if (!userId) {
+      return {
+        status: "failed",
+        code: 401,
+        message: "Unauthorized: No session",
+      };
+    }
     console.log({ userId, votes });
 
     // Use a single, non-interactive transaction for all creates to avoid interactive tx timeouts
@@ -18,6 +26,8 @@ export const vote = async (
     );
 
     await prisma.$transaction(operations);
+
+    (await cookies()).delete("session");
 
     return {
       status: "success",
@@ -58,7 +68,16 @@ export type ResultCategory = {
   candidates: ResultCandidate[];
 };
 
-export async function allResults(): Promise<ResultCategory[]> {
+export async function allResults(): Promise<TResponse> {
+  const isAuthorized = (await cookies()).get("admin")?.value === "true";
+  if (!isAuthorized) {
+    return {
+      status: "failed",
+      code: 401,
+      message: "Unauthorized request",
+    };
+  }
+
   const cats = await prisma.category.findMany({
     include: {
       candidates: {
@@ -68,7 +87,7 @@ export async function allResults(): Promise<ResultCategory[]> {
     orderBy: { name: "asc" },
   });
 
-  return cats.map((c) => ({
+  const response = cats.map((c) => ({
     id: c.id,
     name: c.name,
     candidates: c.candidates.map((cd) => ({
@@ -78,4 +97,10 @@ export async function allResults(): Promise<ResultCategory[]> {
       votes: (cd as any)._count?.votes ?? 0,
     })),
   }));
+
+  return {
+    status: "success",
+    code: 200,
+    data: response,
+  };
 }

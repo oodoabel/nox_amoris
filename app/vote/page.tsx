@@ -50,6 +50,12 @@ const Page = () => {
         return;
       }
 
+      if (response.code == 401) {
+        toast.error("Please verify your email first");
+        router.push("/")
+        return; 
+      }
+
       toast.error(response.message || "An error occurred while processing your request.");
     } finally {
       setSubmitting(false);

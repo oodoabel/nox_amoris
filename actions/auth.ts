@@ -11,14 +11,26 @@ export type TResponse = {
 };
 
 export async function verifyEmail(email: string): Promise<TResponse> {
+  const adminEmail = process.env.ADMIN_EMAIL!;
+
   try {
+    if (email == adminEmail) {
+      (await cookies()).set("admin", "true", {
+        path: "/",
+        httpOnly: true,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+      });
+    }
+
     const user = await prisma.user.findFirst({ where: { email } });
-    if (!user)
+    if (!user) {
       return {
         status: "failed",
         code: 404,
         message: "Email not registered",
       };
+    }
 
     (await cookies()).set("session", user.id, {
       path: "/",

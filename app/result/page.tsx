@@ -1,7 +1,9 @@
+"use client"
+
 import React from "react";
 import { allResults, type ResultCategory } from "@/actions/vote";
-
-// Server Component: fetches aggregated results via server action and renders UI
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 function EmptyState() {
     return (
@@ -97,12 +99,24 @@ function CategoryCard({ category }: { category: ResultCategory }) {
 }
 
 export default async function ResultPage() {
-    const categories = (await allResults()) as ResultCategory[];
+
+    const router = useRouter()
+
+    const response = await allResults()
+
+    if (response.code == 401) {
+        toast.error("Unauthorized access. Please login as admin.");
+        window.location.href = '/'
+
+        return <EmptyState />
+    }
+
+    const categories = response.data as ResultCategory[];
     const hasAnyCandidates = categories.some((c) => (c.candidates?.length || 0) > 0);
+
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
-            {/* Header */}
             <div className="mb-8 py-5 text-center">
                 <h2 className="text-md font-bold text-gray-700 lg:text-2xl">NOX AMORIS AWARDS</h2>
                 <h1 className="mt-2 text-xl font-extrabold text-green-700 lg:text-3xl">VOTING RESULTS</h1>
