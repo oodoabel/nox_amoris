@@ -485,8 +485,10 @@ const candidateData = {
 
 async function main() {
   console.log("Clearing candidates table...");
-  await prisma.candidate.deleteMany({});
+  // await prisma.vote.deleteMany({});
+  // return;
 
+  await prisma.candidate.deleteMany({});
   console.log("Start seeding candidates...");
 
   for (const [categoryName, candidates] of Object.entries(candidateData)) {
