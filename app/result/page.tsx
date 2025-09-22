@@ -1,8 +1,5 @@
-"use client"
-
 import React from "react";
 import { allResults, type ResultCategory } from "@/actions/vote";
-import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 function EmptyState() {
