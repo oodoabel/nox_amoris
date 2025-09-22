@@ -100,8 +100,6 @@ function CategoryCard({ category }: { category: ResultCategory }) {
 
 export default async function ResultPage() {
 
-    const router = useRouter()
-
     const response = await allResults()
 
     if (response.code == 401) {
