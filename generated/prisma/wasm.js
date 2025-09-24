@@ -169,6 +169,10 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "rhel-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -194,8 +198,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  // url = env(\"DATABASE_URL\")\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DIRECT_URL\")\n}\n\nmodel Vote {\n  id String @id @default(cuid())\n\n  candidateId String\n  userId      String\n  categoryId  String\n\n  candidate Candidate @relation(fields: [candidateId], references: [id])\n  user      User      @relation(fields: [userId], references: [id])\n  category  Category  @relation(fields: [categoryId], references: [id])\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n\n  @@unique([candidateId, userId, categoryId])\n}\n\nmodel User {\n  id       String  @id @default(cuid())\n  email    String  @unique\n  hasVoted Boolean @default(false)\n\n  votes Vote[]\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n\nmodel Candidate {\n  id    String  @id @default(cuid())\n  name  String\n  image String?\n\n  votes Vote[]\n\n  category   Category @relation(fields: [categoryId], references: [id])\n  categoryId String\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n\nmodel Category {\n  id   String @id @default(cuid())\n  name String\n\n  candidates Candidate[]\n  votes      Vote[]\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n",
-  "inlineSchemaHash": "5d4fd9aec43841dafa514528c062fd2acd28888d27b0c2e6426177da9bcd3c79",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n  output        = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  // url = env(\"DATABASE_URL\")\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DIRECT_URL\")\n}\n\nmodel Vote {\n  id String @id @default(cuid())\n\n  candidateId String\n  userId      String\n  categoryId  String\n\n  candidate Candidate @relation(fields: [candidateId], references: [id])\n  user      User      @relation(fields: [userId], references: [id])\n  category  Category  @relation(fields: [categoryId], references: [id])\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n\n  @@unique([candidateId, userId, categoryId])\n}\n\nmodel User {\n  id       String  @id @default(cuid())\n  email    String  @unique\n  hasVoted Boolean @default(false)\n\n  votes Vote[]\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n\nmodel Candidate {\n  id    String  @id @default(cuid())\n  name  String\n  image String?\n\n  votes Vote[]\n\n  category   Category @relation(fields: [categoryId], references: [id])\n  categoryId String\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n\nmodel Category {\n  id   String @id @default(cuid())\n  name String\n\n  candidates Candidate[]\n  votes      Vote[]\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n",
+  "inlineSchemaHash": "fb7e6ba085fc5ec866f7d872a77350ff37e5a0d6d9a32038417718d782e03315",
   "copyEngine": true
 }
 config.dirname = '/'
