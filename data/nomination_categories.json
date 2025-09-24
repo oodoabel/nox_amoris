@@ -143,7 +143,7 @@
       "1": {
         "id": 22,
         "name": "DAVID AND SANDRA",
-        "imageurl": "https://drive.google.com/thumbnail?id=1gtRo3yRddFdz0ArUVgsTugRT3CY-5Z4h"
+        "imageurl": "candidates/davidandsandra.png"
       }
     }
   },
@@ -506,11 +506,6 @@
     "name": "Mr. Ebony (GK)",
     "candidates": {
       "1": {
-        "id": 77,
-        "name": "Olajide Olivia",
-        "imageurl": "https://drive.google.com/thumbnail?id=1ovBgrMi22Qo2DzZdPTvGF_GiGOT1ZOLh"
-      },
-      "2": {
         "id": 78,
         "name": "MANI UMAR",
         "imageurl": "https://drive.google.com/thumbnail?id=19ZiiLjcPEFLw7COJZTU6kta74x2ZRU7e"
@@ -592,7 +587,7 @@
   },
   {
     "id": 35,
-    "name": "Sports Personality of the Year (GK)",
+    "name": "Sports Personality of the Year - Male",
     "candidates": {
       "1": {
         "id": 90,
@@ -603,8 +598,14 @@
         "id": 91,
         "name": "Abraham Labu Ibrahim",
         "imageurl": "https://drive.google.com/thumbnail?id=1lAmUgMriDKtBeJfQ71xpN_b4PJRDVCr7"
-      },
-      "3": {
+      }
+    }
+  },
+  {
+    "id": 36,
+    "name": "Sports Personality of the Year - Female",
+    "candidates": {
+      "1": {
         "id": 92,
         "name": "Ikyobo kashimana Sandra",
         "imageurl": "https://drive.google.com/thumbnail?id=16RYcPqVXB6XUgAqk-UyKn0uu7oSH2zZG"

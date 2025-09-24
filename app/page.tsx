@@ -13,19 +13,18 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleVerifyEmail = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     setIsLoading(true);
 
-    const verify = await verifyEmail(email)
+    const verify = await verifyEmail(email);
     if (verify.status == "success") {
-      setIsVerified(true)
-      toast.success("Email verified, redirectng...")
-      goToVotePage()
-    }
-    else {
-      toast.error(verify.message || "Failed to verify email")
-      console.log({ error: verify.code })
+      setIsVerified(true);
+      toast.success("Email verified, redirectng...");
+      goToVotePage();
+    } else {
+      toast.error(verify.message || "Failed to verify email");
+      console.log({ error: verify.code });
     }
 
     setIsLoading(false);
@@ -38,9 +37,7 @@ const LoginPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-tr from-(--primary) via-(--secondary)  to-(--tertiary)">
       <div className="w-full max-w-lg p-8 bg-white shadow-xl bg-opacity-90 rounded-3xl">
-        <h1 className="mb-4 text-3xl font-bold text-center text-gray-900 select-none">
-          Login Page
-        </h1>
+        <h1 className="mb-4 text-3xl font-bold text-center text-gray-900 select-none"></h1>
         <p className="mb-8 text-center text-gray-700 select-none">
           Please enter your email you registered in the NFCS Bio-Data form
         </p>

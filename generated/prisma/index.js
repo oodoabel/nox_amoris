@@ -35,12 +35,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.15.0
- * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
+ * Prisma Client JS version: 6.16.2
+ * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.15.0",
-  engine: "85179d7826409ee107a6ba334b5e305ae3fba9fb"
+  client: "6.16.2",
+  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -159,7 +159,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/arewa/dev/clones/nox_amoris/generated/prisma",
+      "value": "C:\\Users\\get2a\\Documents\\Programs\\fyb_votes\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -168,12 +168,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/arewa/dev/clones/nox_amoris/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\get2a\\Documents\\Programs\\fyb_votes\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -181,13 +181,12 @@ const config = {
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma",
-  "clientVersion": "6.15.0",
-  "engineVersion": "85179d7826409ee107a6ba334b5e305ae3fba9fb",
+  "clientVersion": "6.16.2",
+  "engineVersion": "1c57fdcd7e44b29b9313256c76699e91c3ac3c43",
   "datasourceNames": [
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -196,8 +195,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DIRECT_URL\")\n}\n\nmodel Vote {\n  id String @id @default(cuid())\n\n  candidateId String\n  userId      String\n  categoryId  String\n\n  candidate Candidate @relation(fields: [candidateId], references: [id])\n  user      User      @relation(fields: [userId], references: [id])\n  category  Category  @relation(fields: [categoryId], references: [id])\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n\n  @@unique([candidateId, userId, categoryId])\n}\n\nmodel User {\n  id       String  @id @default(cuid())\n  email    String  @unique\n  hasVoted Boolean @default(false)\n\n  votes Vote[]\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n\nmodel Candidate {\n  id    String  @id @default(cuid())\n  name  String\n  image String?\n\n  votes Vote[]\n\n  category   Category @relation(fields: [categoryId], references: [id])\n  categoryId String\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n\nmodel Category {\n  id   String @id @default(cuid())\n  name String\n\n  candidates Candidate[]\n  votes      Vote[]\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n",
-  "inlineSchemaHash": "1b040617f7fa87a66cbf705dd64b4dc1f7f439dde099b683bf8da9abab384631",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  // url = env(\"DATABASE_URL\")\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DIRECT_URL\")\n}\n\nmodel Vote {\n  id String @id @default(cuid())\n\n  candidateId String\n  userId      String\n  categoryId  String\n\n  candidate Candidate @relation(fields: [candidateId], references: [id])\n  user      User      @relation(fields: [userId], references: [id])\n  category  Category  @relation(fields: [categoryId], references: [id])\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n\n  @@unique([candidateId, userId, categoryId])\n}\n\nmodel User {\n  id       String  @id @default(cuid())\n  email    String  @unique\n  hasVoted Boolean @default(false)\n\n  votes Vote[]\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n\nmodel Candidate {\n  id    String  @id @default(cuid())\n  name  String\n  image String?\n\n  votes Vote[]\n\n  category   Category @relation(fields: [categoryId], references: [id])\n  categoryId String\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n\nmodel Category {\n  id   String @id @default(cuid())\n  name String\n\n  candidates Candidate[]\n  votes      Vote[]\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n}\n",
+  "inlineSchemaHash": "5d4fd9aec43841dafa514528c062fd2acd28888d27b0c2e6426177da9bcd3c79",
   "copyEngine": true
 }
 
@@ -236,8 +235,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
-path.join(process.cwd(), "generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node")
+path.join(__dirname, "query_engine-windows.dll.node");
+path.join(process.cwd(), "generated/prisma/query_engine-windows.dll.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "generated/prisma/schema.prisma")
