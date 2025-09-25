@@ -23,6 +23,11 @@
         "id": 5,
         "name": "Chizzy & Mary",
         "imageurl": "candidates/chizzy-clique-gk.jpg"
+      },
+      "2": {
+        "id": 93,
+        "name": "Jovita & Gracious",
+        "imageurl": "candidates/graciousandjovita.png"
       }
     }
   },
@@ -84,11 +89,6 @@
         "imageurl": "https://drive.google.com/thumbnail?id=11PbHlM7by0_rj9nQxRAqgrCUItF1mAKf"
       }
     }
-  },
-  {
-    "id": 7,
-    "name": "Cool, Calm & Collected (Bosso)",
-    "candidates": {}
   },
   {
     "id": 8,
