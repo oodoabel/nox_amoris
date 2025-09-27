@@ -1,5 +1,8 @@
-import React from "react";
-import { allResults, type ResultCategory } from "@/actions/vote";
+"use client"
+
+import { Result } from "@/types";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function EmptyState() {
@@ -18,7 +21,7 @@ function EmptyState() {
     );
 }
 
-function CategoryCard({ category }: { category: ResultCategory }) {
+function CategoryCard({ category }: { category: Result }) {
     const totalVotes = category.candidates.reduce((sum, c) => sum + (c.votes || 0), 0);
     const maxVotes = Math.max(0, ...category.candidates.map((c) => c.votes || 0));
     const winners = new Set(
@@ -95,19 +98,35 @@ function CategoryCard({ category }: { category: ResultCategory }) {
     );
 }
 
-export default async function ResultPage() {
+export default function ResultPage() {
+    const router = useRouter()
+    const [results, setResults] = useState<Result[]>([])
 
-    const response = await allResults()
+    const fetchResults = async () => {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/results`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            method: "GET",
+            credentials: 'include'
+        })
 
-    if (response.code == 401) {
-        toast.error("Unauthorized access. Please login as admin.");
-        window.location.href = '/'
+        const result = await res.json()
 
-        return <EmptyState />
+        setResults(result.data)
+
+        if (result.code == 401) {
+            toast.error("Unauthorized access. Please login as admin.");
+
+            router.push("/")
+
+            return <EmptyState />
+        }
     }
 
-    const categories = response.data as ResultCategory[];
-    const hasAnyCandidates = categories.some((c) => (c.candidates?.length || 0) > 0);
+    useEffect(() => {
+        fetchResults();
+    }, []);
 
 
     return (
@@ -120,11 +139,11 @@ export default async function ResultPage() {
 
             <main className="px-4 pb-10 sm:px-6 lg:px-10">
                 <div className="mx-auto max-w-6xl">
-                    {!hasAnyCandidates ? (
+                    {!results.length ? (
                         <EmptyState />
                     ) : (
                         <ul className="space-y-10">
-                            {categories.map((category) => (
+                            {results.map((category) => (
                                 <CategoryCard key={category.id} category={category} />
                             ))}
                         </ul>
