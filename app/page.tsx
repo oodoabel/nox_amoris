@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { verifyEmail } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -17,14 +16,31 @@ const LoginPage = () => {
 
     setIsLoading(true);
 
-    const verify = await verifyEmail(email);
-    if (verify.status == "success") {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: "POST",
+      body: JSON.stringify({
+        email,
+      }),
+    });
+
+    if (!res.ok) {
+      console.log({ res: "Failed" })
+      setIsVerified(false)
+      toast.error("Failed to verify email");
+    }
+
+    const verify = await res.json();
+
+    if (verify.res.status == "success") {
       setIsVerified(true);
       toast.success("Email verified, redirectng...");
       goToVotePage();
     } else {
-      toast.error(verify.message || "Failed to verify email");
-      console.log({ error: verify.code });
+      toast.error(await verify.res.message || "Failed to verify email");
+      console.log({ error: verify.res.message });
     }
 
     setIsLoading(false);
