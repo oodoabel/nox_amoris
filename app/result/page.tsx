@@ -113,7 +113,7 @@ export default function ResultPage() {
 
         const result = await res.json()
 
-        setResults(result.data)
+        setResults(result.data || [])
 
         if (result.code == 401) {
             toast.error("Unauthorized access. Please login as admin.");
@@ -139,7 +139,7 @@ export default function ResultPage() {
 
             <main className="px-4 pb-10 sm:px-6 lg:px-10">
                 <div className="mx-auto max-w-6xl">
-                    {!results.length ? (
+                    {!results ? (
                         <EmptyState />
                     ) : (
                         <ul className="space-y-10">

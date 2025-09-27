@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { allCategories, vote } from "@/actions/vote";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -9,6 +8,7 @@ type SelectionMap = Record<string, string>;
 
 const Page = () => {
   const [selectedCandidates, setSelectedCandidates] = useState<SelectionMap>({});
+  const [prevVotes, setPrevVotes] = useState<SelectionMap>({})
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -19,12 +19,29 @@ const Page = () => {
   const fetchCanidates = async () => {
     try {
       setLoading(true);
-      const cat = await allCategories();
-      if (!cat) {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/candidates`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: "GET",
+        credentials: 'include'
+      })
+
+      const cat = await res.json()
+
+      if (cat.status != 'success') {
         setCategories([]);
         return;
       }
-      setCategories(cat);
+      setCategories(cat.data);
+
+      cat.data.map((category: any) => {
+        if (category.votes[0]) {
+          handleCandidateSelect(category.id, category.votes[0].candidateId, true)
+        }
+      })
+
+      console.log({ cat })
     } finally {
       setLoading(false);
     }
@@ -34,14 +51,31 @@ const Page = () => {
     fetchCanidates();
   }, []);
 
-  const handleCandidateSelect = (categoryId: string, candidateId: string) => {
-    setSelectedCandidates((prev) => ({ ...prev, [categoryId]: candidateId }));
+  const handleCandidateSelect = (categoryId: string, candidateId: string, isPrevVote = false) => {
+    if (isPrevVote) {
+      setPrevVotes((prev) => ({ ...prev, [categoryId]: candidateId }));
+    }
+    else {
+      setSelectedCandidates((prev) => ({ ...prev, [categoryId]: candidateId }));
+    }
   };
 
   const handleVoteSubmission = async () => {
     try {
       setSubmitting(true);
-      const response = await vote(selectedCandidates);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/vote`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: "POST",
+        body: JSON.stringify({
+          data: selectedCandidates,
+        }),
+        credentials: 'include'
+      });
+
+      const response = await res.json()
+
       console.log({ response });
 
       if (response.status == "success") {
@@ -53,7 +87,7 @@ const Page = () => {
       if (response.code == 401) {
         toast.error("Please verify your email first");
         router.push("/")
-        return; 
+        return;
       }
 
       toast.error(response.message || "An error occurred while processing your request.");
@@ -61,6 +95,10 @@ const Page = () => {
       setSubmitting(false);
     }
   };
+
+  const preventVoteChange = () => {
+    toast.error("You cannot change your previous votes")
+  }
 
   const selectedCount = useMemo(
     () => Object.keys(selectedCandidates).length,
@@ -155,13 +193,13 @@ const Page = () => {
 
                   <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {Object.values(category.candidates).map((candidate: any) => {
-                      const isSelected = selectedCandidates[category.id] === candidate.id;
+                      const isSelected = selectedCandidates[category.id] === candidate.id || prevVotes[category.id] == candidate.id;
                       return (
                         <button
                           key={candidate.id}
                           type="button"
                           onClick={() =>
-                            handleCandidateSelect(category.id, candidate.id)
+                            prevVotes[category.id] ? preventVoteChange() : handleCandidateSelect(category.id, candidate.id)
                           }
                           className={`group relative rounded-2xl border transition-all text-left bg-white/70 backdrop-blur hover:shadow-md focus:outline-none ${isSelected
                             ? "border-emerald-500 ring-2 ring-emerald-400/60"
@@ -169,7 +207,7 @@ const Page = () => {
                             }`}
                         >
                           {/* Checkmark badge when selected */}
-                          {isSelected && (
+                          {(isSelected) && (
                             <span className="absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white shadow">
                               {/* Check Icon */}
                               <svg
