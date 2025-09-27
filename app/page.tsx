@@ -24,26 +24,29 @@ const LoginPage = () => {
       body: JSON.stringify({
         email,
       }),
+      credentials: 'include'
     });
 
-    if (!res.ok) {
-      console.log({ res: "Failed" })
+    if (res.ok) {
+      const verify = await res.json();
+
+      if (verify.res.status == "success") {
+        setIsVerified(true);
+
+        toast.success("Email verified, redirectng...");
+        goToVotePage();
+      } else {
+        toast.error(await verify.res.message || "Failed to verify email");
+        console.log({ error: verify.res.message });
+      }
+
+      setIsLoading(false);
+    }
+
+    else {
       setIsVerified(false)
       toast.error("Failed to verify email");
     }
-
-    const verify = await res.json();
-
-    if (verify.res.status == "success") {
-      setIsVerified(true);
-      toast.success("Email verified, redirectng...");
-      goToVotePage();
-    } else {
-      toast.error(await verify.res.message || "Failed to verify email");
-      console.log({ error: verify.res.message });
-    }
-
-    setIsLoading(false);
   };
 
   const goToVotePage = () => {
