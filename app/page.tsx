@@ -33,6 +33,8 @@ const LoginPage = () => {
       if (verify.res.status == "success") {
         setIsVerified(true);
 
+        window.localStorage.setItem('session', verify.res.data.id)
+
         toast.success("Email verified, redirectng...");
         goToVotePage();
       } else {

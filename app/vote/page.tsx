@@ -18,10 +18,12 @@ const Page = () => {
 
   const fetchCanidates = async () => {
     try {
+      console.log({ sessionFromCandidatesReq: window.localStorage.getItem('session') })
       setLoading(true);
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/candidates`, {
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${window.localStorage.getItem('session')}`
         },
         method: "GET",
         credentials: 'include'
@@ -62,10 +64,12 @@ const Page = () => {
 
   const handleVoteSubmission = async () => {
     try {
+      console.log({ sessioFromVoteSubmission: window.localStorage.getItem('session') })
       setSubmitting(true);
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/vote`, {
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${window.localStorage.getItem('session')}`
         },
         method: "POST",
         body: JSON.stringify({
@@ -79,14 +83,22 @@ const Page = () => {
       console.log({ response });
 
       if (response.status == "success") {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+          method: "POST",
+        })
+
+        localStorage.clear()
+
         toast.success(response.message || "Your votes have been submitted successfully.")
         router.push("/")
+
         return;
       }
 
       if (response.code == 401) {
         toast.error("Please verify your email first");
         router.push("/")
+
         return;
       }
 

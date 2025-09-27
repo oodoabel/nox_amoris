@@ -106,6 +106,7 @@ export default function ResultPage() {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/results`, {
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${window.localStorage.getItem('session')}`
             },
             method: "GET",
             credentials: 'include'
