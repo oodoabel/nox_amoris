@@ -16,7 +16,7 @@ const Page = () => {
 
   const router = useRouter();
 
-  const electionEndTime = new Date('2025-09-29T23:59:59');
+  const electionEndTime = new Date('2025-09-30T06:00:00');
   const [timeLeft, setTimeLeft] = useState(0);
   const [electionEnded, setElectionEnded] = useState(false);
 
