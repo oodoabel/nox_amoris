@@ -77,6 +77,7 @@ const LoginPage = () => {
             className="w-full py-3 cursor-pointer font-semibold text-white transition bg-(--primary) shadow-md hover:bg-(--primary)/80 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
           >
             {isLoading ? "Verifying..." : "Verify Email"}
+            {isLoading && <div className="ml-2 animate-spin h-5 w-5 border-t-2 border-b-2 border-white rounded-full" />}
           </button>
         </form>
       </div>

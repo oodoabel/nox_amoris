@@ -16,6 +16,18 @@ const Page = () => {
 
   const router = useRouter();
 
+  const electionEndTime = new Date('2025-09-30T06:00:00');
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [electionEnded, setElectionEnded] = useState(false);
+
+  const formatTime = (seconds: number) => {
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${days}d ${hours}h ${mins}m ${secs}s`;
+  };
+
   const fetchCanidates = async () => {
     try {
       console.log({ sessionFromCandidatesReq: window.localStorage.getItem('session') })
@@ -52,6 +64,31 @@ const Page = () => {
   useEffect(() => {
     fetchCanidates();
   }, []);
+
+  useEffect(() => {
+    const now = new Date();
+    const diff = Math.floor((electionEndTime.getTime() - now.getTime()) / 1000);
+    if (diff > 0) {
+      setTimeLeft(diff);
+    } else {
+      setElectionEnded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            setElectionEnded(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [timeLeft]);
 
   const handleCandidateSelect = (categoryId: string, candidateId: string, isPrevVote = false) => {
     if (isPrevVote) {
@@ -176,132 +213,156 @@ const Page = () => {
         </h1>
       </div>
 
-      <main className="px-4 pb-28 sm:px-6 lg:px-10">
-        <div className="mx-auto max-w-6xl">
-          {/* Info banner */}
-          <div className="mb-8 rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700 px-4 py-3 text-sm">
-            Tip: Click a candidate to select. A green ring indicates your pick for that category.
+      {electionEnded ? (
+        <div className="text-center py-10">
+          <h2 className="text-3xl font-bold text-red-600">The election has ended.</h2>
+          <p className="text-gray-600">Thank you for participating. Please check back later for results.</p>
+        </div>
+      ) : (
+        <>
+          <div className="text-center py-5">
+            <div className="text-sm text-gray-600">Election ends in:</div>
+            <div className="text-lg font-mono text-gray-800">{formatTime(timeLeft)}</div>
           </div>
 
-          {loading ? (
-            renderSkeleton()
-          ) : categories.length === 0 || !hasAnyCandidates ? (
-            renderEmptyState()
-          ) : (
-            <ul className="space-y-10">
-              {categories.map((category: any) => (
-                <li
-                  key={category.id}
-                  className="p-6 rounded-2xl border border-slate-200/60 bg-white/80 shadow-sm hover:shadow-md transition-shadow backdrop-blur-sm"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <h2 className="text-lg sm:text-xl font-bold text-slate-800">
-                      {category.name}
-                    </h2>
-                    <span className="inline-flex items-center rounded-full bg-slate-100 text-slate-600 text-xs px-3 py-1 border border-slate-200">
-                      Category
-                    </span>
-                  </div>
+          <main className="px-4 pb-28 sm:px-6 lg:px-10">
+            <div className="mx-auto max-w-6xl">
+              {/* Info banner */}
+              <div className="mb-8 rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700 px-4 py-3 text-sm">
+                <b>
+                  Tip:
+                </b>
+                <ul className="list-outside list-disc pl-4">
+                  <li>
+                    Click a candidate to select. A green ring indicates you've already selected that candidate
+                  </li>
+                  <li>
+                    You can logout and login later to complete your votes but submitted votes can't be changed!
+                  </li>
+                </ul>
+              </div>
 
-                  <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    {Object.values(category.candidates).map((candidate: any) => {
-                      const isSelected = selectedCandidates[category.id] === candidate.id || prevVotes[category.id] == candidate.id;
-                      return (
-                        <button
-                          key={candidate.id}
-                          type="button"
-                          onClick={() =>
-                            prevVotes[category.id] ? preventVoteChange() : handleCandidateSelect(category.id, candidate.id)
-                          }
-                          className={`group relative rounded-2xl border transition-all text-left bg-white/70 backdrop-blur hover:shadow-md focus:outline-none ${isSelected
-                            ? "border-emerald-500 ring-2 ring-emerald-400/60"
-                            : "border-slate-200 hover:border-slate-300"
-                            }`}
-                        >
-                          {/* Checkmark badge when selected */}
-                          {(isSelected) && (
-                            <span className="absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white shadow">
-                              {/* Check Icon */}
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                                className="h-4 w-4"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.527-1.61-1.61a.75.75 0 1 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.736-5.26Z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            </span>
-                          )}
+              {loading ? (
+                renderSkeleton()
+              ) : categories.length === 0 || !hasAnyCandidates ? (
+                renderEmptyState()
+              ) : (
+                <ul className="space-y-10">
+                  {categories.map((category: any) => (
+                    <li
+                      key={category.id}
+                      className="p-6 rounded-2xl border border-slate-200/60 bg-white/80 shadow-sm hover:shadow-md transition-shadow backdrop-blur-sm"
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <h2 className="text-lg sm:text-xl font-bold text-slate-800">
+                          {category.name}
+                        </h2>
+                        <span className="inline-flex items-center rounded-full bg-slate-100 text-slate-600 text-xs px-3 py-1 border border-slate-200">
+                          Category
+                        </span>
+                      </div>
 
-                          <div className="p-4 flex flex-col items-center">
-                            <div className="relative">
-                              <div className={`rounded-full p-1 ${isSelected
-                                ? "ring-2 ring-emerald-400/60"
-                                : "ring-1 ring-slate-200"
+                      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        {Object.values(category.candidates).map((candidate: any) => {
+                          const isSelected = selectedCandidates[category.id] === candidate.id || prevVotes[category.id] == candidate.id;
+                          return (
+                            <button
+                              key={candidate.id}
+                              type="button"
+                              onClick={() =>
+                                prevVotes[category.id] ? preventVoteChange() : handleCandidateSelect(category.id, candidate.id)
+                              }
+                              className={`group relative rounded-2xl border transition-all text-left bg-white/70 backdrop-blur hover:shadow-md focus:outline-none ${isSelected
+                                ? "border-emerald-500 ring-2 ring-emerald-400/60"
+                                : "border-slate-200 hover:border-slate-300"
                                 }`}
-                              >
-                                <img
-                                  src={candidate.image || "/placeholder.png"}
-                                  alt={candidate.name}
-                                  width={112}
-                                  height={112}
-                                  className="h-24 w-24 lg:h-28 lg:w-28 rounded-full object-cover shadow-sm"
-                                />
-                              </div>
-                            </div>
-                            <h6 className="mt-3 text-sm font-medium text-center text-slate-800 lg:text-base">
-                              {candidate.name}
-                            </h6>
-                            <p className="mt-0.5 text-xs text-slate-500 group-hover:text-slate-600">
-                              Click to select
-                            </p>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </main>
+                            >
+                              {/* Checkmark badge when selected */}
+                              {(isSelected) && (
+                                <span className="absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white shadow">
+                                  {/* Check Icon */}
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="h-4 w-4"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.527-1.61-1.61a.75.75 0 1 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.736-5.26Z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                </span>
+                              )}
 
-      {categories.length > 0 && hasAnyCandidates && (
-        <div className="fixed bottom-0 inset-x-0 z-10">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-10 pb-5">
-            <div className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 shadow-sm">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="text-sm text-slate-600">
-                  Selected <span className="font-semibold text-slate-800">{selectedCount}</span> of
-                  <span className="font-semibold text-slate-800"> {totalCategories}</span> categories
+                              <div className="p-4 flex flex-col items-center">
+                                <div className="relative">
+                                  <div className={`rounded-full p-1 ${isSelected
+                                    ? "ring-2 ring-emerald-400/60"
+                                    : "ring-1 ring-slate-200"
+                                    }`}
+                                  >
+                                    <img
+                                      src={candidate.image || "/placeholder.png"}
+                                      alt={candidate.name}
+                                      width={112}
+                                      height={112}
+                                      className="h-24 w-24 lg:h-28 lg:w-28 rounded-full object-cover shadow-sm"
+                                    />
+                                  </div>
+                                </div>
+                                <h6 className="mt-3 text-sm font-medium text-center text-slate-800 lg:text-base">
+                                  {candidate.name}
+                                </h6>
+                                <p className="mt-0.5 text-xs text-slate-500 group-hover:text-slate-600">
+                                  Click to select
+                                </p>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </main>
+
+          {categories.length > 0 && hasAnyCandidates && (
+            <div className="fixed bottom-0 inset-x-0 z-10">
+              <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-10 pb-5">
+                <div className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 shadow-sm">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div className="text-sm text-slate-600">
+                      Selected <span className="font-semibold text-slate-800">{selectedCount}</span> of
+                      <span className="font-semibold text-slate-800"> {totalCategories}</span> categories
+                    </div>
+                    <button
+                      className="w-full cursor-pointer sm:w-auto inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white bg-emerald-600 rounded-xl shadow hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => handleVoteSubmission()}
+                      disabled={selectedCount === 0 || submitting}
+                      aria-disabled={selectedCount === 0 || submitting}
+                    >
+                      {submitting ? (
+                        <span className="inline-flex items-center gap-2">
+                          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                          </svg>
+                          Submitting...
+                        </span>
+                      ) : (
+                        'Submit Votes'
+                      )}
+                    </button>
+                  </div>
                 </div>
-                <button
-                  className="w-full cursor-pointer sm:w-auto inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white bg-emerald-600 rounded-xl shadow hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={() => handleVoteSubmission()}
-                  disabled={selectedCount === 0 || submitting}
-                  aria-disabled={selectedCount === 0 || submitting}
-                >
-                  {submitting ? (
-                    <span className="inline-flex items-center gap-2">
-                      <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                      </svg>
-                      Submitting...
-                    </span>
-                  ) : (
-                    'Submit Votes'
-                  )}
-                </button>
               </div>
             </div>
-          </div>
-        </div>
+          )}
+        </>
       )}
     </div>
   );
